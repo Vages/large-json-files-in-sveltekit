@@ -1,11 +1,10 @@
 # Lese inn store JSON-filer i SvelteKit
 
 Denne kodebasen viser hvordan man kan lese inn <em>veldig</em> store JSON-filer i en [SvelteKit](https://kit.svelte.dev/)-kodebase uten at byggeprosessen krasjer.
+Nederst i dokumentet finner du noen tips for at datamaskinen skal jobbe raskere mens du jobber med store datafiler.
 
 Vi har laget kodebasen for å hjelpe de som bruker [læreverket Kode](https://kode.cappelendamm.no) med å løse [eksamensoppgaveeksempelet for IT2 våren 2023 (passordbeskyttet)](https://kandidat.udir.no/epsmateriell/eksempeloppgave?navn=rea3049-div+informasjonsteknologi+2&fagkode=rea3049-div&malform=nb-no).
 Løsningene vil sannsynligvis også være nyttige i andre sammenhenger.
-
-Nederst i dokumentet finner du noen tips for at datamaskinen skal jobbe raskere mens du jobber med store datafiler.
 
 <i>Filen `src/routes/05.json` er hentet fra [Oslo bysykkels åpne data](https://oslobysykkel.no/apne-data). Disse dataene er gjort tilgjengelig under [Norsk lisens for offentlige data (NLOD) 2.0](https://data.norge.no/nlod/no/2.0) av [UIP Oslo bysykkel AS](https://oslobysykkel.no/om).</i>
 
@@ -16,20 +15,20 @@ Nederst i dokumentet finner du noen tips for at datamaskinen skal jobbe raskere 
 <!-- toc -->
 
 - [Hvordan bruke denne kodebasen](#hvordan-bruke-denne-kodebasen)
-  * [Installere avhengigheter](#installere-avhengigheter)
-  * [Starte utviklingstjeneren](#starte-utviklingstjeneren)
-  * [Bygge appen](#bygge-appen)
+  - [Installere avhengigheter](#installere-avhengigheter)
+  - [Starte utviklingstjeneren](#starte-utviklingstjeneren)
+  - [Bygge appen](#bygge-appen)
 - [Forklaring av problem og løsning](#forklaring-av-problem-og-losning)
-  * [Problemet: Byggeprosessen går tom for minne](#problemet-byggeprosessen-gar-tom-for-minne)
-  * [Løsningen: Gi prosessen mer minne](#losningen-gi-prosessen-mer-minne)
-    + [Med `NODE_OPTIONS=--max_old_space_size=` gir man Node.js mer minne](#med-node_options--max_old_space_size-gir-man-nodejs-mer-minne)
-    + [Legg inn minnekravene i `package.json` for å spare tid.](#legg-inn-minnekravene-i-packagejson-for-a-spare-tid)
+  - [Problemet: Byggeprosessen går tom for minne](#problemet-byggeprosessen-gar-tom-for-minne)
+  - [Løsningen: Gi prosessen mer minne](#losningen-gi-prosessen-mer-minne)
+    - [Med `NODE_OPTIONS=--max_old_space_size=` gir man Node.js mer minne](#med-node_options--max_old_space_size-gir-man-nodejs-mer-minne)
+    - [Legg inn minnekravene i `package.json` for å spare tid.](#legg-inn-minnekravene-i-packagejson-for-a-spare-tid)
       - [Før](#for)
       - [Etter](#etter)
-    + [Du står fritt til å velge nesten så mye minne du vil](#du-star-fritt-til-a-velge-nesten-sa-mye-minne-du-vil)
+    - [Du står fritt til å velge nesten så mye minne du vil](#du-star-fritt-til-a-velge-nesten-sa-mye-minne-du-vil)
 - [Tips for å få ting til å gå raskere](#tips-for-a-fa-ting-til-a-ga-raskere)
-  * [Kutt ned på dataen mens du utvikler](#kutt-ned-pa-dataen-mens-du-utvikler)
-  * [Bytt ut `.map` og `.reduce` med `for … of`-løkker](#bytt-ut-map-og-reduce-med-for--of-lokker)
+  - [Kutt ned på dataen mens du utvikler](#kutt-ned-pa-dataen-mens-du-utvikler)
+  - [Bytt ut `.map` og `.reduce` med `for … of`-løkker](#bytt-ut-map-og-reduce-med-for--of-lokker)
 
 <!-- tocstop -->
 
