@@ -1,4 +1,4 @@
-# Lese inn store JSON-filer i SvelteKit – uten krasj, og kanskje også raskt
+# Lese inn store JSON-filer i SvelteKit
 
 Denne kodebasen viser hvordan man kan lese inn <em>veldig</em> store JSON-filer i en [SvelteKit](https://kit.svelte.dev/)-kodebase uten at byggeprosessen krasjer.
 
@@ -7,7 +7,7 @@ Løsningene vil sannsynligvis også være nyttige i andre sammenhenger.
 
 Nederst i dokumentet finner du noen tips for at datamaskinen skal jobbe raskere mens du jobber med store datafiler.
 
-<i>Filen `src/routes/05.json` er hentet fra [Oslo bysykkels åpne data](https://oslobysykkel.no/apne-data). Disse dataene er gjort tilgjengelig under [Norsk lisens for offentlige data (NLOD) 2.0](https://data.norge.no/nlod/no/2.0) av [UIP Oslo bysykkel AS](https://urbaninfrastructure.no).</i>
+<i>Filen `src/routes/05.json` er hentet fra [Oslo bysykkels åpne data](https://oslobysykkel.no/apne-data). Disse dataene er gjort tilgjengelig under [Norsk lisens for offentlige data (NLOD) 2.0](https://data.norge.no/nlod/no/2.0) av [UIP Oslo bysykkel AS](https://oslobysykkel.no/om).</i>
 
 ## Innholdsfortegnelse
 
