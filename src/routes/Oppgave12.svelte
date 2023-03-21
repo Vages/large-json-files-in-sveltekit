@@ -26,9 +26,9 @@
 	);
 </script>
 
-<h1>Oppgave 12</h1>
+<h2>Oppgave 12</h2>
 
-<h2>a)</h2>
+<h3>a)</h3>
 <p>
 	Lag et program som presenterer de tre mest brukte startlokasjonene og de tre minst brukte
 	startlokasjonene. Presentasjonen skal også vise antall turer fra disse startlokasjonene.
@@ -74,7 +74,7 @@
 	</table>
 </figure>
 
-<h2>b)</h2>
+<h3>b)</h3>
 <p>
 	Utvid programmet slik at det også presenter et passende diagram som viser totalt antall turer fra
 	alle startlokasjoner til sammen, per ukedag.
@@ -84,3 +84,9 @@
 	<figcaption>Antall turer per ukedag som stolpediagram</figcaption>
 	<EnkeltStolpediagram overskrifter={['Ukedag', 'Turer']} data={ukedagtabell} />
 </figure>
+
+<style>
+	p {
+		font-style: italic;
+	}
+</style>

@@ -3,7 +3,7 @@
 	export let data = [];
 
 	/** @type {[string, string]} */
-	export let overskrifter = ["stolpenavn", "verdi"];
+	export let overskrifter = ['stolpenavn', 'verdi'];
 
 	const max = Math.max(...data.map(([, count]) => count));
 </script>

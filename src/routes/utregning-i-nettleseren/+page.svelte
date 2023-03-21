@@ -16,4 +16,6 @@
 		}, {});
 </script>
 
+<h1>Med utregning i nettleseren</h1>
+
 <Oppgave12 {turerPerStasjon} {turerPerUkedag} />
