@@ -1,0 +1,48 @@
+/*
+ * Nabbed from https://github.com/LeoColomb/perfectmotherfuckingwebsite/blob/20023957cb5268fe5dd34099237329226d71d6c2/fuckingstyle.scss
+ *
+ *             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+ *                     Version 2, December 2004
+ *
+ *  Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+ *
+ *  Everyone is permitted to copy and distribute verbatim or modified
+ *  copies of this license document, and changing it is allowed as long
+ *  as the name is changed.
+ *
+ *             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+ *    TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+ *
+ *   0. You just DO WHAT THE FUCK YOU WANT TO.
+ */
+
+body {
+	max-width: 650px;
+	margin: 40px auto;
+	padding: 0 10px;
+	font: 18px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+		'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+		'Noto Color Emoji';
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	line-height: 1.2;
+}
+
+@media (prefers-color-scheme: dark) {
+	body {
+		color: #c9d1d9;
+		background: #0d1117;
+	}
+
+	a:link {
+		color: #58a6ff;
+	}
+
+	a:visited {
+		color: #8e96f0;
+	}
+}
