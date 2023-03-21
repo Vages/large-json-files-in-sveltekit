@@ -1,5 +1,19 @@
 <script>
 	export let data;
+
+	$: maxTripsInOneDay = Math.max(...Object.values(data.tripsByDayOfWeek));
+
+	const nummerTilUkedag = new Map([
+		[1, 'Mandag'],
+		[2, 'Tirsdag'],
+		[3, 'Onsdag'],
+		[4, 'Torsdag'],
+		[5, 'Fredag'],
+		[6, 'Lørdag'],
+		[0, 'Søndag']
+	]);
+
+	console.log(nummerTilUkedag.entries());
 </script>
 
 <h1>Oppgave 12</h1>
@@ -49,3 +63,36 @@
 		{/each}
 	</table>
 </figure>
+
+<h2>b)</h2>
+<p>
+	Utvid programmet slik at det også presenter et passende diagram som viser totalt antall turer fra
+	alle startlokasjoner til sammen, per ukedag.
+</p>
+
+<table>
+	<thead>
+		<tr>
+			<th>Ukedag</th>
+			<th>Turer</th>
+		</tr>
+		{#each [...nummerTilUkedag.entries()] as [day, name]}
+			<tr>
+				<td>{name}</td>
+				<td style="width: 300px">
+					<div class="bar" style="width: {(data.tripsByDayOfWeek[day] * 100) / maxTripsInOneDay}%;">
+						{data.tripsByDayOfWeek[day]}
+					</div>
+				</td>
+			</tr>
+		{/each}
+	</thead>
+</table>
+
+<style>
+	.bar {
+		background-color: #4caf50;
+		color: white;
+		padding: 5px;
+	}
+</style>
