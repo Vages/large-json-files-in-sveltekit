@@ -1,10 +1,11 @@
 # Lese inn store JSON-filer i SvelteKit – uten krasj, og kanskje også raskt
 
 Denne kodebasen viser hvordan man kan lese inn <em>veldig</em> store JSON-filer i en [SvelteKit](https://kit.svelte.dev/)-kodebase uten at byggeprosessen krasjer.
-Den viser også noen triks for å gjøre utviklingstjeneren litt raskere.
 
 Vi har laget den for å hjelpe de som bruker læreverket Kode til å løse [eksempeloppgaven REA3049-DIV Informasjonsteknologi 2 for faget IT2 våren 2023 (passordbeskyttet)](https://kandidat.udir.no/epsmateriell/eksempeloppgave?navn=rea3049-div+informasjonsteknologi+2&fagkode=rea3049-div&malform=nb-no).
 Løsningene vil sannsynligvis også være nyttige i andre sammenhenger.
+
+Nederst i dokumentet finner du noen tips for at datamaskinen skal jobbe raskere mens du jobber med store datafiler.
 
 ## Hvordan bruke denne kodebasen
 
@@ -131,20 +132,19 @@ For at datamaskinen din skal yte så bra som mulig, anbefaler vi at du bruker et
 ### Kutt ned på dataen mens du utvikler
 
 Hvis du har en stor JSON-fil med data, kan det være lurt å lage et mindre datasett som du bruker mens du utvikler.
-Lag for eksempel en ny JSON-fil som inneholder bare de første 1000 elementene i den store fila som du bruker mens du utvikler. 
+Lag for eksempel en ny JSON-fil som inneholder bare de første 1000 elementene i den store fila.
 <strong>Husk å bytte tilbake til det fullstendige datasettet før du eventuelt leverer.</strong>
 
 ### Bytt ut `.map` og `.reduce` med `for … of`-løkker
 
-Selv om `.map` og `.reduce` er nyttige funksjoner, kan de bruke mye minne være ganske mye tregere enn vanlige løkker.
+Selv om `.map` og `.reduce` er nyttige funksjoner, kan de være ganske mye tregere enn vanlige løkker.
 Vi opplevde at koden i dette prosjektet ble mye raskere når vi byttet ut `.map` og `.reduce` med vanlige løkker.
 
 For eksempel:
 
 ```js
-// Kjører raskt
+// Dette er raskt:
 $: turerPerStasjon = regnUtTurerPerStasjon(sykkeldata);
-
 function regnUtTurerPerStasjon(data) {
 	let teller = {};
 	for (const tur of data) {
@@ -160,9 +160,3 @@ $: turerPerStasjon = sykkeldata.reduce((acc, stasjon) => {
 	return { ...acc, [stasjon.start_station_name]: turtall };
 }, {});
 ```
-
-### Regn ut tallene på tjeneren heller enn i nettleseren
-
-I `src/routes/(oppgave 12)/utregning-paa-tjeneren` ser du hvordan man kan bruke teknikker fra SvelteKit slik at man slipper å overføre alle 80 MB med sykkeldata til nettleseren og kun sender den ferdigutregnede statistikken.
-
-For å forstå hva som skjer, anbefaler vi at du leser siden [«Loading data» fra SvelteKit-dokumentasjonen](https://kit.svelte.dev/docs/load).
