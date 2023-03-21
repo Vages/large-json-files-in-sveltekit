@@ -1,7 +1,22 @@
 <script>
-	export let data;
+	import sykkeldata from './05.json';
 
-	$: maxTripsInOneDay = Math.max(...Object.values(data.tripsByDayOfWeek));
+	$: toppstasjoner = sykkeldata.reduce((acc, stasjon) => {
+		const turtall = (acc[stasjon.start_station_name] || 0) + 1;
+		return { ...acc, [stasjon.start_station_name]: turtall };
+	}, {});
+
+	$: tripsByDayOfWeek = sykkeldata
+		.map((trip) => {
+			return new Date(trip.started_at).getDay();
+		})
+		.reduce((acc, day) => {
+			return { ...acc, [day]: (acc[day] || 0) + 1 };
+		}, {});
+
+	$: toppstasjonerSortert = Object.entries(toppstasjoner).sort((a, b) => b[1] - a[1]);
+
+	$: maxTripsInOneDay = Math.max(...Object.values(tripsByDayOfWeek));
 
 	const nummerTilUkedag = new Map([
 		[1, 'Mandag'],
@@ -32,7 +47,7 @@
 				<th>Turer</th>
 			</tr>
 		</thead>
-		{#each data.toppstasjonerSortert.slice(0, 3) as [stasjon, turer], index}
+		{#each toppstasjonerSortert.slice(0, 3) as [stasjon, turer], index}
 			<tr>
 				<td>{index + 1}</td>
 				<td>{stasjon}</td>
@@ -52,7 +67,7 @@
 				<th>Turer</th>
 			</tr>
 		</thead>
-		{#each data.toppstasjonerSortert.slice(-3).reverse() as [stasjon, turer], index}
+		{#each toppstasjonerSortert.slice(-3).reverse() as [stasjon, turer], index}
 			<tr>
 				<td>{index + 1}</td>
 				<td>{stasjon}</td>
@@ -80,11 +95,8 @@
 				<tr>
 					<td>{name}</td>
 					<td style="width: 300px">
-						<div
-							class="bar"
-							style="width: {(data.tripsByDayOfWeek[day] * 100) / maxTripsInOneDay}%;"
-						>
-							{data.tripsByDayOfWeek[day]}
+						<div class="bar" style="width: {(tripsByDayOfWeek[day] * 100) / maxTripsInOneDay}%;">
+							{tripsByDayOfWeek[day]}
 						</div>
 					</td>
 				</tr>
