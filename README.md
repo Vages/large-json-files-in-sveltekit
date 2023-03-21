@@ -7,6 +7,34 @@ Løsningene vil sannsynligvis også være nyttige i andre sammenhenger.
 
 Nederst i dokumentet finner du noen tips for at datamaskinen skal jobbe raskere mens du jobber med store datafiler.
 
+<i>Filen `src/routes/05.json` er hentet fra [Oslo bysykkels åpne data](https://oslobysykkel.no/apne-data). Disse dataene er gjort tilgjengelig under [Norsk lisens for offentlige data (NLOD) 2.0](https://data.norge.no/nlod/no/2.0) av [UIP Oslo bysykkel AS](https://urbaninfrastructure.no).</i>
+
+## Innholdsfortegnelse
+
+<!-- prettier-ignore-start -->
+
+<!-- toc -->
+
+- [Hvordan bruke denne kodebasen](#hvordan-bruke-denne-kodebasen)
+  * [Installere avhengigheter](#installere-avhengigheter)
+  * [Starte utviklingstjeneren](#starte-utviklingstjeneren)
+  * [Bygge appen](#bygge-appen)
+- [Forklaring av problem og løsning](#forklaring-av-problem-og-losning)
+  * [Problemet: Byggeprosessen går tom for minne](#problemet-byggeprosessen-gar-tom-for-minne)
+  * [Løsningen: Gi prosessen mer minne](#losningen-gi-prosessen-mer-minne)
+    + [Node-prosesser får mer minne med `NODE_OPTIONS=--max_old_space_size=`](#node-prosesser-far-mer-minne-med-node_options--max_old_space_size)
+    + [Legg inn minnekravene i `package.json` for å spare tid.](#legg-inn-minnekravene-i-packagejson-for-a-spare-tid)
+      - [Før](#for)
+      - [Etter](#etter)
+    + [Du står fritt til å velge nesten så mye minne du vil](#du-star-fritt-til-a-velge-nesten-sa-mye-minne-du-vil)
+- [Tips for å få ting til å gå raskere](#tips-for-a-fa-ting-til-a-ga-raskere)
+  * [Kutt ned på dataen mens du utvikler](#kutt-ned-pa-dataen-mens-du-utvikler)
+  * [Bytt ut `.map` og `.reduce` med `for … of`-løkker](#bytt-ut-map-og-reduce-med-for--of-lokker)
+
+<!-- tocstop -->
+
+<!-- prettier-ignore-stop -->
+
 ## Hvordan bruke denne kodebasen
 
 ### Installere avhengigheter
@@ -36,7 +64,7 @@ Du kan forhåndsvise den bygde appen med `npm run preview`.
 I oppgave 12 fra oppgavesettet blir kandidaten bedt om å lese inn et datasett på 80 MB fra Oslo
 bysykkel.
 
-> #### Oppgave 12 – Oversikt over sykkelturer
+> <strong>Oppgave 12 – Oversikt over sykkelturer</strong>
 >
 > Du skal lage et program som leser inn informasjon fra datasettet og presenterer dette i to
 > oversikter. Du skal bruke datasettet fra forberedelsen. Hvis du ikke har forberedt dette kan du
@@ -138,7 +166,8 @@ Lag for eksempel en ny JSON-fil som inneholder bare de første 1000 elementene i
 ### Bytt ut `.map` og `.reduce` med `for … of`-løkker
 
 Selv om `.map` og `.reduce` er nyttige funksjoner, kan de være ganske mye tregere enn vanlige løkker.
-Vi opplevde at koden i dette prosjektet ble mye raskere når vi byttet ut `.map` og `.reduce` med vanlige løkker.
+Vi opplevde at koden i dette prosjektet ble <em>mye</em> raskere når vi byttet ut `.map` og `.reduce` med vanlige løkker.
+(Ja, det var virkelig natt og dag.)
 
 For eksempel:
 
