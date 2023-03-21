@@ -1,6 +1,6 @@
 <script>
 	import sykkeldata from '../05.json';
-	import Oppgave12 from '../Oppgave12.svelte';
+	import Visning from '../Visning.svelte';
 
 	$: turerPerStasjon = sykkeldata.reduce((acc, stasjon) => {
 		const turtall = (acc[stasjon.start_station_name] || 0) + 1;
@@ -18,4 +18,4 @@
 
 <h1>Med utregning i nettleseren</h1>
 
-<Oppgave12 {turerPerStasjon} {turerPerUkedag} />
+<Visning {turerPerStasjon} {turerPerUkedag} />
