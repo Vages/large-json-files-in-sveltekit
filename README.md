@@ -8,8 +8,6 @@ Løsningene vil sannsynligvis også være nyttige i andre sammenhenger.
 
 <i>Filen `src/routes/05.json` er hentet fra [Oslo bysykkels åpne data](https://oslobysykkel.no/apne-data). Disse dataene er gjort tilgjengelig under [Norsk lisens for offentlige data (NLOD) 2.0](https://data.norge.no/nlod/no/2.0) av [UIP Oslo bysykkel AS](https://oslobysykkel.no/om).</i>
 
-## Innholdsfortegnelse
-
 - [Hvordan bruke denne kodebasen](#hvordan-bruke-denne-kodebasen)
   - [Installere avhengigheter](#installere-avhengigheter)
   - [Starte utviklingstjeneren](#starte-utviklingstjeneren)
@@ -17,11 +15,9 @@ Løsningene vil sannsynligvis også være nyttige i andre sammenhenger.
 - [Forklaring av problem og løsning](#forklaring-av-problem-og-løsning)
   - [Problemet: Byggeprosessen går tom for minne](#problemet-byggeprosessen-går-tom-for-minne)
   - [Løsningen: Gi prosessen mer minne](#løsningen-gi-prosessen-mer-minne)
-    - [Med `NODE_OPTIONS=--max_old_space_size=` gir man Node.js mer minne](#med-node_options--max_old_space_sizeminnestørrelse-gir-man-nodejs-mer-minne)
-    - [Legg inn minnekravene i `package.json` for å spare tid.](#legg-inn-minnekravene-i-packagejson-for-å-spare-tid)
-      - [Før](#før)
-      - [Etter](#etter)
-    - [Du står fritt til å velge nesten så mye minne du vil](#du-står-fritt-til-å-velge-nesten-så-mye-minne-du-vil)
+    - [Eksempel på hvordan vi brukte denne oppskriften](#eksempel-på-hvordan-vi-brukte-denne-oppskriften)
+      - [Scriptene i `package.json` etter alle endringer](#scriptene-i-packagejson-etter-alle-endringer)
+    - [Hvis algoritmen ikke virker, må man kutte ut unødvendige felter fra JSON-fila](#hvis-algoritmen-ikke-virker-må-man-kutte-ut-unødvendige-felter-fra-json-fila)
 - [Tips for å få ting til å gå raskere](#tips-for-å-få-ting-til-å-gå-raskere)
   - [Kutt ned på dataen mens du utvikler](#kutt-ned-på-dataen-mens-du-utvikler)
   - [Bytt ut `.map` og `.reduce` med `for … of`-løkker](#bytt-ut-map-og-reduce-med-for--of-løkker)
@@ -105,46 +101,70 @@ node::OOMErrorHandler(char const*, bool) [/Users/foo/.asdf/installs/nodejs/18.14
 (… og så videre)
 ```
 
+Kommandoen `dev` i SvelteKit benytter seg av byggeverktøyet Vite.
+Feilen som oppstår i dette prosjektet, ligner på [en kjent svakhet i Vite](https://github.com/vitejs/vite/issues/2433#issuecomment-792914871).
+Heldigvis finnes det en mulig løsning på problemet, som er øverste kommentar på saken: Gi prosessen mer minne.
+
 ### Løsningen: Gi prosessen mer minne
 
-Det finnes én måte å fikse en krasj fordi man går tom for minne:
-Gi prosessen mer minne.
+Man kan gi et script i et SvelteKit-prosjekt mer minne ved å sette en miljøvariabel som heter `NODE_OPTIONS`.
+For å være så å si garantert å lykkes, kan man følge følgende oppskrift
+(eller <em>algoritme</em>, for å bruke fagspråket):
 
-#### Med `NODE_OPTIONS=--max_old_space_size=<minnestørrelse>` gir man Node.js mer minne
+1. Installer pakken [`cross-env`](https://www.npmjs.com/package/cross-env) med `npm install --save-dev cross-env`.
+2. Åpne fila `package.json` i prosjektet ditt og finn fram til nøkkelen `scripts`.
+3. Skriv `cross-env NODE_OPTIONS=--max_old_space_size=8192` foran den kommandoen som krasjer.
+   Dette betyr at kommandoen skal ha 8 GB minne (i stedet for de vanlige 4 GB den får av Node.js som standard).
+4. Prøv å kjøre kommandoen på nytt.
+   1. Hvis kommandoen fortsatt krasjer, dobler du tallet etter `--max_old_space_size=` (for eksempel `--max_old_space_size=16384`) og prøver enda en gang.
+   2. Hvis kommandoen <em>ikke</em> krasjer, er du ferdig!
 
-Når man bruker en kommando som til syvende og sist benytter seg av Node.js (slik SvelteKit gjør), kan man gi programmet mer minne ved å skrive følgende: `NODE_OPTIONS=--max_old_space_size=<minnestørrelsen oppgitt i megabyte>`.
+#### Eksempel på hvordan vi brukte denne oppskriften
 
-I stedet for å skrive `npm run dev`, kan man for eksempel skrive `NODE_OPTIONS=--max_old_space_size=16384 npm run dev`, som er nok for programmet i denne kodebasen.
-Hvis ikke 16384 MB (16 GB) er nok, kan du doble tallet én eller flere ganger.
+Først installerte vi `cross-env`.
 
-#### Legg inn minnekravene i `package.json` for å spare tid.
+Kommandoen som krasjet i det tidligere eksempelet var `dev`.
+Derfor endret vi `package.json` slik:
 
-For å slippe å huske å skrive denne kommandoen hver gang, kan du legge inn minnekravene på de kommandoene som går tom for minne i `package.json`:
-
-##### Før
-
-```json
-"dev": "vite dev",
-"build": "vite build",
+```
+"dev": "cross-env NODE_OPTIONS=--max_old_space_size=8196 vite dev",
 ```
 
-##### Etter
+Når vi kjørte `npm run dev -- --open`, krasjet appen dessverre fortsatt.
+Vi doblet derfor tallet etter `--max_old_space_size=`.
+Etterpå så kommandoen slik ut i `package.json`:
 
-Legg merke til kommandoene som slutter med `:regular-memory-amount`.
-Disse versjonene får bare tildelt den vanlige mengden minne, slik at man kan undersøke hvordan appen oppfører seg uten noe ekstra minne.
+```
+"dev": "cross-env NODE_OPTIONS=--max_old_space_size=16384 vite dev",
+```
 
-```json
+Da kjørte appen fint!
+
+##### Scriptene i `package.json` etter alle endringer
+
+I tillegg til scriptet `dev`, var også scriptet `build` trøblete.
+Etter å ha brukt fremgangsmåten over også på kommandoen `build`, så scriptene de slik ut:
+
+```
 "dev": "NODE_OPTIONS=--max_old_space_size=16384 vite dev",
-"dev:regular-memory-amount": "vite dev",
 "build": "NODE_OPTIONS=--max_old_space_size=16384 vite build",
-"build:regular-memory-amount": "vite build",
+"dev:original": "vite dev",
+"build:original": "vite build",
 ```
 
-#### Du står fritt til å velge nesten så mye minne du vil
+Vi har beholdt de originale kommandoene som `dev:original` og `build:original` fordi vi har ønsket å kunne undersøke krasjene bedre.
 
-Man trenger ikke tenke på hvor mye internminne (RAM) man har på datamaskinen sin når man setter verdien for Node.js.
-Om man bruker mer plass enn det finnes i internminnet, vil operativsystemet automatisk bruke minnet på sekundærlageret (harddisken) i stedet.
-For at datamaskinen din skal yte så bra som mulig, anbefaler vi likevel at du bruker et så lavt tall som mulig.
+#### Hvis algoritmen ikke virker, må man kutte ut unødvendige felter fra JSON-fila
+
+Man kan sette ganske høye verdier bak `--max_old_space_size=`.
+Verdien kan fint være høyere enn mengden internminne (RAM) man har på datamaskinen sin, for om man bruker mer plass enn det finnes i internminnet, vil operativsystemet begynne å skrive til harddisken i stedet.
+Men etter hvert vil man også bli begrenset av størrelsen på harddisken.
+Da er problemet man prøver å løse for stort for SvelteKit.
+
+I slike tilfeller blir man rett og slett nødt til å kutte ned på mengden data i JSON-fila før du laster den inn i SvelteKit.
+For eksempel kan du fjerne felter som du ikke bruker i appen.
+Dessverre er dette temaet for omfattende til at det er mulig å omtale her.
+Heldigvis er vi ganske sikre på at alle filer som trengs på eksamener i IT2 kommer til å være små nok til at det vil virke å bruke `--max_old_space_size=`.
 
 ## Tips for å få ting til å gå raskere
 
