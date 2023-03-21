@@ -2,7 +2,7 @@
 
 Denne kodebasen viser hvordan man kan lese inn <em>veldig</em> store JSON-filer i en [SvelteKit](https://kit.svelte.dev/)-kodebase uten at byggeprosessen krasjer.
 
-Vi har laget den for å hjelpe de som bruker læreverket Kode til å løse [eksempeloppgaven REA3049-DIV Informasjonsteknologi 2 for faget IT2 våren 2023 (passordbeskyttet)](https://kandidat.udir.no/epsmateriell/eksempeloppgave?navn=rea3049-div+informasjonsteknologi+2&fagkode=rea3049-div&malform=nb-no).
+Vi har laget kodebasen for å hjelpe de som bruker [læreverket Kode](https://kode.cappelendamm.no) med å løse [eksamensoppgaveeksempelet for IT2 våren 2023 (passordbeskyttet)](https://kandidat.udir.no/epsmateriell/eksempeloppgave?navn=rea3049-div+informasjonsteknologi+2&fagkode=rea3049-div&malform=nb-no).
 Løsningene vil sannsynligvis også være nyttige i andre sammenhenger.
 
 Nederst i dokumentet finner du noen tips for at datamaskinen skal jobbe raskere mens du jobber med store datafiler.
@@ -22,7 +22,7 @@ Nederst i dokumentet finner du noen tips for at datamaskinen skal jobbe raskere 
 - [Forklaring av problem og løsning](#forklaring-av-problem-og-losning)
   * [Problemet: Byggeprosessen går tom for minne](#problemet-byggeprosessen-gar-tom-for-minne)
   * [Løsningen: Gi prosessen mer minne](#losningen-gi-prosessen-mer-minne)
-    + [Node-prosesser får mer minne med `NODE_OPTIONS=--max_old_space_size=`](#node-prosesser-far-mer-minne-med-node_options--max_old_space_size)
+    + [Med `NODE_OPTIONS=--max_old_space_size=` gir man Node.js mer minne](#med-node_options--max_old_space_size-gir-man-nodejs-mer-minne)
     + [Legg inn minnekravene i `package.json` for å spare tid.](#legg-inn-minnekravene-i-packagejson-for-a-spare-tid)
       - [Før](#for)
       - [Etter](#etter)
@@ -76,21 +76,23 @@ bysykkel.
 > b) Utvid programmet slik at det også presenter et passende diagram som viser totalt antall turer
 > fra alle startlokasjoner til sammen, per ukedag.
 
-Mange vil da begynne løsningen ved å lage en fil der de importerer JSON-filen:
+Et ganske naturlig sted å starte er å lage en fil der man importerer datasettet, for eksempel:
 
 ```sveltehtml
-<!-- En fil i en eller annen undermappe av src/routes som heter +page.svelte -->
+<!-- src/routes/+page.svelte -->
 <script>
 	import sykkeldata from './05.json';
-	//  og så videre …
 </script>
+
+<h1>Hello World</h1>
+<p>Her kommer det en løsning etter hvert</p>
 ```
 
-Når man først starter utviklingstjeneren med `npm run dev`, ser alt ut til å være bra.
-Så snart man åpner siden i nettleseren, derimot, går ting galt. Først venter man <em>lenge</em> på at siden skal laste inn. Til slutt mislykkes det hele.
+Når man starter utviklingstjeneren med `npm run dev -- --open`, går ting galt. Først venter man <em>lenge</em> på at siden skal laste inn, men så mister nettleseren tilkoblingen til utviklingstjeneren.
 
-Hvis man undersøker vinduet der man starter utviklingstjeneren, vil man få se en lang feilmelding som starter med `<--- Last few GCs --->`.
-Under den neste overskriften, `<--- JS stacktrace --->`, står en beskrivelse av årsaken: `FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory`.
+Hvis man undersøker vinduet der man starter utviklingstjeneren, vil man se at utviklingstjeneren har krasjet. Feilmeldingen der skal starte med `<--- Last few GCs --->`.
+
+Under overskriften `<--- JS stacktrace --->` står det hva feilen faktisk skyldes: `FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory`.
 <strong>Denne feilmeldingen betyr at SvelteKit har brukt opp minnet den fikk til å kjøre Svelte.</strong>
 
 ```
@@ -115,20 +117,18 @@ node::OOMErrorHandler(char const*, bool) [/Users/foo/.asdf/installs/nodejs/18.14
 ### Løsningen: Gi prosessen mer minne
 
 Det finnes én måte å fikse en krasj fordi man går tom for minne:
-Gi prosessen mer minne (logisk nok).
+Gi prosessen mer minne.
 
-#### Node-prosesser får mer minne med `NODE_OPTIONS=--max_old_space_size=<minnestørrelse>`
+#### Med `NODE_OPTIONS=--max_old_space_size=<minnestørrelse>` gir man Node.js mer minne
 
 Når man bruker en kommando som til syvende og sist benytter seg av Node.js (slik SvelteKit gjør), kan man gi programmet mer minne ved å skrive følgende: `NODE_OPTIONS=--max_old_space_size=<minnestørrelsen oppgitt i megabyte>`.
 
-I stedet for å skrive `npm run dev`, kan man for eksempel skrive `NODE_OPTIONS=--max_old_space_size=16384 npm run dev`.
-Hvis ikke 16384 MB (16 GB) er nok, kan du doble det én eller flere ganger.
+I stedet for å skrive `npm run dev`, kan man for eksempel skrive `NODE_OPTIONS=--max_old_space_size=16384 npm run dev`, som er nok for programmet i denne kodebasen.
+Hvis ikke 16384 MB (16 GB) er nok, kan du doble tallet én eller flere ganger.
 
 #### Legg inn minnekravene i `package.json` for å spare tid.
 
-For å få til dette, har vi endret litt på `package.json`-fila i dette prosjektet.
-Dette betyr at SvelteKit kan bruke opptil 16 GB minne før den krasjer (i stedet for standardmengden på 4 GB).
-Dersom man jobber med et prosjekt som krever enda mer plass, kan man bytte ut `16384` med et enda større tall.
+For å slippe å huske å skrive denne kommandoen hver gang, kan du legge inn minnekravene på de kommandoene som går tom for minne i `package.json`:
 
 ##### Før
 
@@ -151,9 +151,9 @@ Disse versjonene får bare tildelt den vanlige mengden minne, slik at man kan un
 
 #### Du står fritt til å velge nesten så mye minne du vil
 
-Man trenger ikke tenke på hvor mye internminne (RAM) datamaskinen har når man setter .
-Om man overstiger grensen for internminne, vil operativsystemet automatisk bruke minnet på sekundærlageret (harddisken) i stedet.
-For at datamaskinen din skal yte så bra som mulig, anbefaler vi at du bruker et så lavt tall som mulig
+Man trenger ikke tenke på hvor mye internminne (RAM) man har på datamaskinen sin når man setter verdien for Node.js.
+Om man bruker mer plass enn det finnes i internminnet, vil operativsystemet automatisk bruke minnet på sekundærlageret (harddisken) i stedet.
+For at datamaskinen din skal yte så bra som mulig, anbefaler vi likevel at du bruker et så lavt tall som mulig.
 
 ## Tips for å få ting til å gå raskere
 
@@ -165,9 +165,9 @@ Lag for eksempel en ny JSON-fil som inneholder bare de første 1000 elementene i
 
 ### Bytt ut `.map` og `.reduce` med `for … of`-løkker
 
-Selv om `.map` og `.reduce` er nyttige funksjoner, kan de være ganske mye tregere enn vanlige løkker.
+Selv om `.map` og `.reduce` er nyttige funksjoner, kan de være ganske mye tregere enn vanlige løkker (se [The reduce (`{...spread}`) anti-pattern](https://www.richsnapp.com/article/2019/06-09-reduce-spread-anti-pattern)).
+
 Vi opplevde at koden i dette prosjektet ble <em>mye</em> raskere når vi byttet ut `.map` og `.reduce` med vanlige løkker.
-(Ja, det var virkelig natt og dag.)
 
 For eksempel:
 
