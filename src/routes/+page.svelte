@@ -54,7 +54,7 @@
 				<th>Turer</th>
 			</tr>
 		</thead>
-		{#each data.toppstasjonerSortert.slice(0, 3) as [stasjon, turer], index}
+		{#each data.toppstasjonerSortert.slice(-3).reverse() as [stasjon, turer], index}
 			<tr>
 				<td>{index + 1}</td>
 				<td>{stasjon}</td>
