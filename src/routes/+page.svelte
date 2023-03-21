@@ -12,8 +12,6 @@
 		[6, 'Lørdag'],
 		[0, 'Søndag']
 	]);
-
-	console.log(nummerTilUkedag.entries());
 </script>
 
 <h1>Oppgave 12</h1>
