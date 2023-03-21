@@ -1,4 +1,4 @@
-export const prerender = true;
+// export const prerender = true;
 
 import sykkeldata from './05.json';
 
