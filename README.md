@@ -10,29 +10,21 @@ Løsningene vil sannsynligvis også være nyttige i andre sammenhenger.
 
 ## Innholdsfortegnelse
 
-<!-- prettier-ignore-start -->
-
-<!-- toc -->
-
 - [Hvordan bruke denne kodebasen](#hvordan-bruke-denne-kodebasen)
   - [Installere avhengigheter](#installere-avhengigheter)
   - [Starte utviklingstjeneren](#starte-utviklingstjeneren)
   - [Bygge appen](#bygge-appen)
-- [Forklaring av problem og løsning](#forklaring-av-problem-og-losning)
-  - [Problemet: Byggeprosessen går tom for minne](#problemet-byggeprosessen-gar-tom-for-minne)
-  - [Løsningen: Gi prosessen mer minne](#losningen-gi-prosessen-mer-minne)
-    - [Med `NODE_OPTIONS=--max_old_space_size=` gir man Node.js mer minne](#med-node_options--max_old_space_size-gir-man-nodejs-mer-minne)
-    - [Legg inn minnekravene i `package.json` for å spare tid.](#legg-inn-minnekravene-i-packagejson-for-a-spare-tid)
-      - [Før](#for)
+- [Forklaring av problem og løsning](#forklaring-av-problem-og-løsning)
+  - [Problemet: Byggeprosessen går tom for minne](#problemet-byggeprosessen-går-tom-for-minne)
+  - [Løsningen: Gi prosessen mer minne](#løsningen-gi-prosessen-mer-minne)
+    - [Med `NODE_OPTIONS=--max_old_space_size=` gir man Node.js mer minne](#med-node_options--max_old_space_sizeminnestørrelse-gir-man-nodejs-mer-minne)
+    - [Legg inn minnekravene i `package.json` for å spare tid.](#legg-inn-minnekravene-i-packagejson-for-å-spare-tid)
+      - [Før](#før)
       - [Etter](#etter)
-    - [Du står fritt til å velge nesten så mye minne du vil](#du-star-fritt-til-a-velge-nesten-sa-mye-minne-du-vil)
-- [Tips for å få ting til å gå raskere](#tips-for-a-fa-ting-til-a-ga-raskere)
-  - [Kutt ned på dataen mens du utvikler](#kutt-ned-pa-dataen-mens-du-utvikler)
-  - [Bytt ut `.map` og `.reduce` med `for … of`-løkker](#bytt-ut-map-og-reduce-med-for--of-lokker)
-
-<!-- tocstop -->
-
-<!-- prettier-ignore-stop -->
+    - [Du står fritt til å velge nesten så mye minne du vil](#du-står-fritt-til-å-velge-nesten-så-mye-minne-du-vil)
+- [Tips for å få ting til å gå raskere](#tips-for-å-få-ting-til-å-gå-raskere)
+  - [Kutt ned på dataen mens du utvikler](#kutt-ned-på-dataen-mens-du-utvikler)
+  - [Bytt ut `.map` og `.reduce` med `for … of`-løkker](#bytt-ut-map-og-reduce-med-for--of-løkker)
 
 ## Hvordan bruke denne kodebasen
 
