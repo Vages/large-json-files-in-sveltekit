@@ -126,6 +126,43 @@ Man trenger ikke tenke på hvor mye internminne (RAM) datamaskinen har når man 
 Om man overstiger grensen for internminne, vil operativsystemet automatisk bruke minnet på sekundærlageret (harddisken) i stedet.
 For at datamaskinen din skal yte så bra som mulig, anbefaler vi at du bruker et så lavt tall som mulig
 
-### Få raskere oppdateringer ved å kjøre utregningene på tjeneren heller enn i nettleseren
+## Tips for å få ting til å gå raskere
 
-todo
+### Kutt ned på dataen mens du utvikler
+
+Hvis du har en stor JSON-fil med data, kan det være lurt å lage et mindre datasett som du bruker mens du utvikler.
+Lag for eksempel en ny JSON-fil som inneholder bare de første 1000 elementene i den store fila som du bruker mens du utvikler. 
+<strong>Husk å bytte tilbake til det fullstendige datasettet før du eventuelt leverer.</strong>
+
+### Bytt ut `.map` og `.reduce` med `for … of`-løkker
+
+Selv om `.map` og `.reduce` er nyttige funksjoner, kan de bruke mye minne være ganske mye tregere enn vanlige løkker.
+Vi opplevde at koden i dette prosjektet ble mye raskere når vi byttet ut `.map` og `.reduce` med vanlige løkker.
+
+For eksempel:
+
+```js
+// Kjører raskt
+$: turerPerStasjon = regnUtTurerPerStasjon(sykkeldata);
+
+function regnUtTurerPerStasjon(data) {
+	let teller = {};
+	for (const tur of data) {
+		const turtall = teller[tur.start_station_name];
+		teller[tur.start_station_name] = (turtall || 0) + 1;
+	}
+	return teller;
+}
+
+// Dette er tregt:
+$: turerPerStasjon = sykkeldata.reduce((acc, stasjon) => {
+	const turtall = (acc[stasjon.start_station_name] || 0) + 1;
+	return { ...acc, [stasjon.start_station_name]: turtall };
+}, {});
+```
+
+### Regn ut tallene på tjeneren heller enn i nettleseren
+
+I `src/routes/(oppgave 12)/utregning-paa-tjeneren` ser du hvordan man kan bruke teknikker fra SvelteKit slik at man slipper å overføre alle 80 MB med sykkeldata til nettleseren og kun sender den ferdigutregnede statistikken.
+
+For å forstå hva som skjer, anbefaler vi at du leser siden [«Loading data» fra SvelteKit-dokumentasjonen](https://kit.svelte.dev/docs/load).
