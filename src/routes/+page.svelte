@@ -70,24 +70,30 @@
 	alle startlokasjoner til sammen, per ukedag.
 </p>
 
-<table>
-	<thead>
-		<tr>
-			<th>Ukedag</th>
-			<th>Turer</th>
-		</tr>
-		{#each [...nummerTilUkedag.entries()] as [day, name]}
+<figure>
+	<figcaption>Antall turer per ukedag som stolpediagram</figcaption>
+	<table>
+		<thead>
 			<tr>
-				<td>{name}</td>
-				<td style="width: 300px">
-					<div class="bar" style="width: {(data.tripsByDayOfWeek[day] * 100) / maxTripsInOneDay}%;">
-						{data.tripsByDayOfWeek[day]}
-					</div>
-				</td>
+				<th>Ukedag</th>
+				<th>Turer</th>
 			</tr>
-		{/each}
-	</thead>
-</table>
+			{#each [...nummerTilUkedag.entries()] as [day, name]}
+				<tr>
+					<td>{name}</td>
+					<td style="width: 300px">
+						<div
+							class="bar"
+							style="width: {(data.tripsByDayOfWeek[day] * 100) / maxTripsInOneDay}%;"
+						>
+							{data.tripsByDayOfWeek[day]}
+						</div>
+					</td>
+				</tr>
+			{/each}
+		</thead>
+	</table>
+</figure>
 
 <style>
 	.bar {
