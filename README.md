@@ -135,8 +135,7 @@ Derfor endret vi linjen i `package.json` slik:
 | `"dev": "vite dev",` | `"dev": "cross-env NODE_OPTIONS=--max_old_space_size=8192 vite dev",` |
 
 Når vi kjørte `npm run dev -- --open`, krasjet appen dessverre fortsatt.
-Vi doblet derfor tallet etter `--max_old_space_size=`.
-Etterpå så kommandoen slik ut i `package.json`:
+Derfor doblet vi tallet etter `--max_old_space_size=`:
 
 | Før                                      | Etter                                     |
 | ---------------------------------------- | ----------------------------------------- |
