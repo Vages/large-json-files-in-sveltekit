@@ -1,5 +1,7 @@
 # Lese inn store JSON-filer i SvelteKit
 
+**Hopp til løsningen: [Løsningen: Gi prosessen mer minne](#løsningen-gi-prosessen-mer-minne).**
+
 Denne kodebasen viser hvordan man kan lese inn <em>veldig</em> store JSON-filer i en [SvelteKit](https://kit.svelte.dev/)-kodebase uten at byggeprosessen krasjer.
 Nederst i dokumentet finner du noen tips for at datamaskinen skal jobbe raskere mens du jobber med store datafiler.
 
@@ -113,10 +115,10 @@ Man kan gi et script i et SvelteKit-prosjekt mer minne ved å sette en miljøvar
 For å være så å si garantert å lykkes, kan man følge følgende oppskrift
 (eller <em>algoritme</em>, for å bruke fagspråket):
 
-1. Installer pakken [`cross-env`](https://www.npmjs.com/package/cross-env) med `npm install --save-dev cross-env`.
-2. Åpne fila `package.json` i prosjektet ditt og finn fram til nøkkelen `scripts`.
+1. Installer pakken [`cross-env`](https://www.npmjs.com/package/cross-env) i prosjektet ditt ved å kjøre kommandoen `npm install --save-dev cross-env` i prosjektmappa.
+2. Åpne fila `package.json` i prosjektmappa di. Finn fram til nøkkelen `scripts`.
 3. Skriv `cross-env NODE_OPTIONS=--max_old_space_size=8192` foran den kommandoen som krasjer.
-   Dette betyr at kommandoen skal ha 8 GB minne (i stedet for de vanlige 4 GB den får av Node.js som standard).
+   (Dette betyr at kommandoen skal ha 8 GB minne, 8192 MB, i stedet for de 4 GB den vanligvis får av Node.js).
 4. Prøv å kjøre kommandoen på nytt.
    1. Hvis kommandoen fortsatt krasjer, dobler du tallet etter `--max_old_space_size=` (for eksempel `--max_old_space_size=16384`) og prøver enda en gang.
    2. Hvis kommandoen <em>ikke</em> krasjer, er du ferdig!
@@ -125,22 +127,22 @@ For å være så å si garantert å lykkes, kan man følge følgende oppskrift
 
 Først installerte vi `cross-env`.
 
-Kommandoen som krasjet i det tidligere eksempelet var `dev`.
-Derfor endret vi `package.json` slik:
+Kommandoen som krasjet i dette prosjektet var `dev`.
+Derfor endret vi linjen i `package.json` slik:
 
-```
-"dev": "cross-env NODE_OPTIONS=--max_old_space_size=8196 vite dev",
-```
+| Før                  | Etter                                                                 |
+| -------------------- | --------------------------------------------------------------------- |
+| `"dev": "vite dev",` | `"dev": "cross-env NODE_OPTIONS=--max_old_space_size=8192 vite dev",` |
 
 Når vi kjørte `npm run dev -- --open`, krasjet appen dessverre fortsatt.
 Vi doblet derfor tallet etter `--max_old_space_size=`.
 Etterpå så kommandoen slik ut i `package.json`:
 
-```
-"dev": "cross-env NODE_OPTIONS=--max_old_space_size=16384 vite dev",
-```
+| Før                                      | Etter                                     |
+| ---------------------------------------- | ----------------------------------------- |
+| `NODE_OPTIONS=--max_old_space_size=8192` | `NODE_OPTIONS=--max_old_space_size=16384` |
 
-Da kjørte appen fint!
+Med 16384 MB (16 GB minne) kjørte appen fint!
 
 ##### Scriptene i `package.json` etter alle endringer
 
@@ -154,7 +156,7 @@ Etter å ha brukt fremgangsmåten over også på kommandoen `build`, så scripte
 "build:original": "vite build",
 ```
 
-Vi har beholdt de originale kommandoene som `dev:original` og `build:original` fordi vi har ønsket å kunne undersøke krasjene bedre.
+Vi har beholdt de opprinnelige kommandoene som `dev:original` og `build:original` fordi vi har lyst til å kunne undersøke krasjene.
 
 #### Hvis algoritmen ikke virker, må man kutte ut unødvendige felter fra JSON-fila
 
