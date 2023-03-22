@@ -115,10 +115,10 @@ Man kan gi et script i et SvelteKit-prosjekt mer minne ved å sette en miljøvar
 For å være så å si garantert å lykkes, kan man følge følgende oppskrift
 (eller <em>algoritme</em>, for å bruke fagspråket):
 
-1. Installer pakken [`cross-env`](https://www.npmjs.com/package/cross-env) i prosjektet ditt ved å kjøre kommandoen `npm install --save-dev cross-env` i prosjektmappa.
-2. Åpne fila `package.json` i prosjektmappa di. Finn fram til nøkkelen `scripts`.
+1. Installer pakken [`cross-env`](https://www.npmjs.com/package/cross-env) i prosjektet ditt ved å kjøre kommandoen `npm install --save-dev cross-env` i prosjektmappa. ![Et terminalvindu der man befinner seg i mappa `mitt-svelte-prosjekt` og skal til å kjøre kommandoen `npm install --save-dev cross-env`](./documentation-images/npm-install-cross-env.png)
+2. Åpne fila `package.json` i prosjektmappa di. Finn fram til nøkkelen `scripts`. ![Skjermdump av `script`-nøkkelen i fila `package.json`](./documentation-images/package-json-scripts.png)
 3. Skriv `cross-env NODE_OPTIONS=--max_old_space_size=8192` foran den kommandoen som krasjer.
-   (Dette betyr at kommandoen skal ha 8 GB minne, 8192 MB, i stedet for de 4 GB den vanligvis får av Node.js).
+   (Dette betyr at kommandoen skal ha 8 GB minne, 8192 MB, i stedet for de 4 GB den vanligvis får av Node.js). ![`cross-env NODE_OPTIONS=--max_old_space_size=8192` er føyd til på starten av et av skriptene i `package.json`](./documentation-images/package-json-after-adding-environment-variable.png)
 4. Prøv å kjøre kommandoen på nytt.
    1. Hvis kommandoen fortsatt krasjer, dobler du tallet etter `--max_old_space_size=` (for eksempel `--max_old_space_size=16384`) og prøver enda en gang.
    2. Hvis kommandoen <em>ikke</em> krasjer, er du ferdig!
