@@ -140,7 +140,7 @@ Derfor doblet vi tallet etter `--max_old_space_size=`:
 | ---------------------------------------- | ----------------------------------------- |
 | `NODE_OPTIONS=--max_old_space_size=8192` | `NODE_OPTIONS=--max_old_space_size=16384` |
 
-Med 16384 MB (16 GB minne) krasjet appen ikke lenger.
+Med 16384 MB (16 GB) minne krasjet ikke appen lenger.
 
 ##### Scriptene i `package.json` etter alle endringer
 
