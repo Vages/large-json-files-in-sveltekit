@@ -77,7 +77,9 @@ Et ganske naturlig sted å starte er å lage en fil der man importerer datasette
 
 Når man starter utviklingstjeneren med `npm run dev -- --open`, går ting galt. Først venter man <em>lenge</em> på at siden skal laste inn, men så mister nettleseren tilkoblingen til utviklingstjeneren.
 
-Hvis man undersøker vinduet der man starter utviklingstjeneren, vil man se at utviklingstjeneren har krasjet. Feilmeldingen der skal starte med `<--- Last few GCs --->`.
+![Et vindu i nettleseren Safari. Grå bakgrunn som indikerer at den ikke fikk noe svar fra tjeneren med teksten «Safari kan ikke koble til tjeneren» midt i vinduet.](./documentation-images/no-response-in-safari.png)
+
+Hvis man undersøker vinduet der man startet utviklingstjeneren, vil man se at utviklingstjeneren har krasjet. Feilmeldingen der skal starte med `<--- Last few GCs --->`.
 
 Under overskriften `<--- JS stacktrace --->` står det hva feilen faktisk skyldes: `FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory`.
 <strong>Denne feilmeldingen betyr at SvelteKit har brukt opp minnet den fikk til å kjøre Svelte.</strong>
