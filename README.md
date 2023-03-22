@@ -2,11 +2,11 @@
 
 **Hopp til løsningen: [Løsningen: Gi prosessen mer minne](#løsningen-gi-prosessen-mer-minne).**
 
-Denne kodebasen viser hvordan man kan lese inn <em>veldig</em> store JSON-filer i en [SvelteKit](https://kit.svelte.dev/)-kodebase uten at byggeprosessen krasjer.
-Nederst i dokumentet finner du noen tips for at datamaskinen skal jobbe raskere mens du jobber med store datafiler.
+Denne kodebasen viser hvordan man kan lese inn <em>veldig</em> store JSON-filer i en [SvelteKit](https://kit.svelte.dev/)-kodebase uten at utviklingstjeneren og byggeprosessene krasjer.
+Nederst i dokumentet finner du også noen tips for at datamaskinen skal jobbe raskere mens du jobber med store mengder data.
 
 Vi har laget kodebasen for å hjelpe de som bruker [læreverket Kode](https://kode.cappelendamm.no) med å løse [eksamensoppgaveeksempelet for IT2 våren 2023 (passordbeskyttet)](https://kandidat.udir.no/epsmateriell/eksempeloppgave?navn=rea3049-div+informasjonsteknologi+2&fagkode=rea3049-div&malform=nb-no).
-Løsningene vil sannsynligvis også være nyttige i andre sammenhenger.
+Løsningene vil nok være nyttige også for andre som bruker SvelteKit med store filer.
 
 <i>Filen `src/routes/05.json` er hentet fra [Oslo bysykkels åpne data](https://oslobysykkel.no/apne-data). Disse dataene er gjort tilgjengelig under [Norsk lisens for offentlige data (NLOD) 2.0](https://data.norge.no/nlod/no/2.0) av [UIP Oslo bysykkel AS](https://oslobysykkel.no/om).</i>
 
@@ -34,17 +34,17 @@ npm install
 
 ### Starte utviklingstjeneren
 
-```bash
-npm run dev
-```
+| Uten krasj    | Med krasj              |
+| ------------- | ---------------------- |
+| `npm run dev` | `npm run dev:original` |
 
 ### Bygge appen
 
-```bash
-npm run build
-```
+| Uten krasj      | Med krasj                |
+| --------------- | ------------------------ |
+| `npm run build` | `npm run build:original` |
 
-Du kan forhåndsvise den bygde appen med `npm run preview`.
+Etter et vellykket bygg, kan du prøve den bygde appen med `npm run preview`.
 
 ## Forklaring av problem og løsning
 
@@ -65,7 +65,7 @@ bysykkel.
 > b) Utvid programmet slik at det også presenter et passende diagram som viser totalt antall turer
 > fra alle startlokasjoner til sammen, per ukedag.
 
-Et ganske naturlig sted å starte er å lage en fil der man importerer datasettet, for eksempel:
+Et ganske naturlig sted å starte er å lage en fil der man importerer datasettet. For eksempel:
 
 ```sveltehtml
 <!-- src/routes/+page.svelte -->
@@ -81,10 +81,8 @@ Når man starter utviklingstjeneren med `npm run dev -- --open`, går ting galt.
 
 ![Et vindu i nettleseren Safari. Grå bakgrunn som indikerer at den ikke fikk noe svar fra tjeneren med teksten «Safari kan ikke koble til tjeneren» midt i vinduet.](./documentation-images/no-response-in-safari.png)
 
-Hvis man undersøker vinduet der man startet utviklingstjeneren, vil man se at utviklingstjeneren har krasjet. Feilmeldingen der skal starte med `<--- Last few GCs --->`.
-
-Under overskriften `<--- JS stacktrace --->` står det hva feilen faktisk skyldes: `FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory`.
-<strong>Denne feilmeldingen betyr at SvelteKit har brukt opp minnet den fikk til å kjøre Svelte.</strong>
+Hvis man undersøker vinduet der man startet utviklingstjeneren, vil man se at utviklingstjeneren har krasjet. Under overskriften `<--- JS stacktrace --->` finner man feilårsaken: `FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory`.
+<strong>Denne feilmeldingen betyr at SvelteKit har brukt opp minnet den fikk tildelt av datamaskinen.</strong>
 
 ```
 <--- Last few GCs --->
@@ -107,7 +105,7 @@ node::OOMErrorHandler(char const*, bool) [/Users/foo/.asdf/installs/nodejs/18.14
 
 Kommandoen `dev` i SvelteKit benytter seg av byggeverktøyet Vite.
 Feilen som oppstår i dette prosjektet, ligner på [en kjent svakhet i Vite](https://github.com/vitejs/vite/issues/2433#issuecomment-792914871).
-Heldigvis finnes det en mulig løsning på problemet, som er øverste kommentar på saken: Gi prosessen mer minne.
+Heldigvis finner man en mulig løsning i øverste kommentar på saken: Gi prosessen mer minne.
 
 ### Løsningen: Gi prosessen mer minne
 
@@ -121,7 +119,7 @@ For å være så å si garantert å lykkes, kan man følge følgende oppskrift
    (Dette betyr at kommandoen skal ha 8 GB minne, 8192 MB, i stedet for de 4 GB den vanligvis får av Node.js). ![`cross-env NODE_OPTIONS=--max_old_space_size=8192` er føyd til på starten av et av skriptene i `package.json`](./documentation-images/package-json-after-adding-environment-variable.png)
 4. Prøv å kjøre kommandoen på nytt.
    1. Hvis kommandoen fortsatt krasjer, dobler du tallet etter `--max_old_space_size=` (for eksempel `--max_old_space_size=16384`) og prøver enda en gang.
-   2. Hvis kommandoen <em>ikke</em> krasjer, er du ferdig!
+   2. Hvis kommandoen <em>ikke</em> krasjer, er du ferdig.
 
 #### Eksempel på hvordan vi brukte denne oppskriften
 
@@ -141,12 +139,12 @@ Derfor doblet vi tallet etter `--max_old_space_size=`:
 | ---------------------------------------- | ----------------------------------------- |
 | `NODE_OPTIONS=--max_old_space_size=8192` | `NODE_OPTIONS=--max_old_space_size=16384` |
 
-Med 16384 MB (16 GB minne) kjørte appen fint!
+Med 16384 MB (16 GB minne) krasjet appen ikke lenger.
 
 ##### Scriptene i `package.json` etter alle endringer
 
 I tillegg til scriptet `dev`, var også scriptet `build` trøblete.
-Etter å ha brukt fremgangsmåten over også på kommandoen `build`, så scriptene de slik ut:
+Etter å ha brukt fremgangsmåten over også på kommandoen `build`, så scriptene slik ut:
 
 ```
 "dev": "NODE_OPTIONS=--max_old_space_size=16384 vite dev",
@@ -155,27 +153,23 @@ Etter å ha brukt fremgangsmåten over også på kommandoen `build`, så scripte
 "build:original": "vite build",
 ```
 
-Vi har beholdt de opprinnelige kommandoene som `dev:original` og `build:original` fordi vi har lyst til å kunne undersøke krasjene.
+Vi har beholdt de opprinnelige kommandoene som `dev:original` og `build:original` slik at man kan undersøke hvordan appen oppfører seg når den krasjer.
 
 #### Hvis algoritmen ikke virker, må man kutte ut unødvendige felter fra JSON-fila
 
 Man kan sette ganske høye verdier bak `--max_old_space_size=`.
-Verdien kan fint være høyere enn mengden internminne (RAM) man har på datamaskinen sin, for om man bruker mer plass enn det finnes i internminnet, vil operativsystemet begynne å skrive til harddisken i stedet.
-Men etter hvert vil man også bli begrenset av størrelsen på harddisken.
-Da er problemet man prøver å løse for stort for SvelteKit.
+Verdien kan godt være høyere enn mengden internminne (RAM) man har på datamaskinen sin, for om man bruker mer plass enn det finnes i internminnet, vil operativsystemet begynne å skrive til en midlertidig mappe på harddisken i stedet.
+Etter hvert vil man kunne gå tom for plass på harddisken.
 
-I slike tilfeller blir man rett og slett nødt til å kutte ned på mengden data i JSON-fila før du laster den inn i SvelteKit.
+I slike tilfeller blir du rett og slett nødt til å kutte ned på mengden data i JSON-fila før du laster den inn i SvelteKit.
 For eksempel kan du fjerne felter som du ikke bruker i appen.
-Dessverre er dette temaet for omfattende til at det er mulig å omtale her.
+Dersom du har litt erfaring med verktøy i kommandolinjen, anbefaler vi verktøyet [`jq`](https://stedolan.github.io/jq/).
+Vi ikke kan gi noen detaljert forklaring i dette dokumentet:
+Verktøyet er omfattende, og måten man bruker det på varierer veldig ut fra hvordan inndataen ser ut og hvordan man ønsker at utdataen skal se ut.
+
 Heldigvis er vi ganske sikre på at alle filer som trengs på eksamener i IT2 kommer til å være små nok til at det vil virke å bruke `--max_old_space_size=`.
 
 ## Tips for å få ting til å gå raskere
-
-### Kutt ned på dataen mens du utvikler
-
-Hvis du har en stor JSON-fil med data, kan det være lurt å lage et mindre datasett som du bruker mens du utvikler.
-Lag for eksempel en ny JSON-fil som inneholder bare de første 1000 elementene i den store fila.
-<strong>Husk å bytte tilbake til det fullstendige datasettet før du eventuelt leverer.</strong>
 
 ### Bytt ut `.map` og `.reduce` med `for … of`-løkker
 
@@ -203,3 +197,9 @@ $: turerPerStasjon = sykkeldata.reduce((acc, stasjon) => {
 	return { ...acc, [stasjon.start_station_name]: turtall };
 }, {});
 ```
+
+### Kutt ned på dataen mens du utvikler
+
+Hvis du har en stor JSON-fil med data, kan det være lurt å lage et mindre datasett som du bruker mens du utvikler.
+Lag for eksempel en ny JSON-fil som inneholder bare de første 1000 elementene i den store fila.
+<strong>Husk å bytte tilbake til det fullstendige datasettet før du eventuelt leverer.</strong>
