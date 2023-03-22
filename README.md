@@ -67,13 +67,14 @@ bysykkel.
 
 Et ganske naturlig sted å starte er å lage en fil der man importerer datasettet. For eksempel:
 
-```sveltehtml
+```svelte
 <!-- src/routes/+page.svelte -->
 <script>
 	import sykkeldata from './05.json';
 </script>
 
 <h1>Hello World</h1>
+
 <p>Her kommer det en løsning etter hvert</p>
 ```
 
